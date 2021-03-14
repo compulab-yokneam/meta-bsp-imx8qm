@@ -1,0 +1,159 @@
+From d73ee5250bc7a01868d8e144d0d85667800506e7 Mon Sep 17 00:00:00 2001
+From: Ilya Ledvich <ilya@compulab.co.il>
+Date: Wed, 16 Dec 2020 14:07:32 +0200
+Subject: [PATCH 7/8] arch: arm64: imx8qm: cl-som-imx8max: enable DisplayPort
+
+Signed-off-by: Ilya Ledvich <ilya@compulab.co.il>
+---
+ arch/arm64/boot/dts/freescale/Makefile        |   3 +-
+ .../dts/freescale/imx8qm-sbc-imx8max-dp.dts   | 124 ++++++++++++++++++
+ 2 files changed, 126 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8qm-sbc-imx8max-dp.dts
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 0531c754b9ea..f4b80e8337b4 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -100,7 +100,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek.dtb imx8qm-mek-ov5640.dtb \
+ dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-dom0.dtb imx8qm-mek-domu.dtb \
+ 			  imx8qm-mek-root.dtb imx8qm-mek-inmate.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8qm-sbc-imx8max.dtb \
+-			  imx8qm-sbc-imx8max-pcie.dtb
++			  imx8qm-sbc-imx8max-pcie.dtb \
++			  imx8qm-sbc-imx8max-dp.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-ai_ml.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8dxl-phantom-mek.dtb \
+ 			  imx8dxl-phantom-mek-rpmsg.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx8qm-sbc-imx8max-dp.dts b/arch/arm64/boot/dts/freescale/imx8qm-sbc-imx8max-dp.dts
+new file mode 100644
+index 000000000000..68c381a94133
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8qm-sbc-imx8max-dp.dts
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright 2019 NXP
++ */
++/*
++ * DP only dts, disable ldb display.
++ */
++#include "imx8qm-sbc-imx8max.dts"
++
++/ {
++	sound-hdmi {
++		compatible = "fsl,imx-audio-cdnhdmi";
++		model = "imx-audio-dp";
++		audio-cpu = <&sai5>;
++		hdmi-out;
++	};
++};
++
++&i2c0_mipi0 {
++	status = "disabled";
++};
++
++&mipi0_dphy {
++	status = "disabled";
++};
++
++&mipi0_dsi_host {
++	status = "disabled";
++};
++
++&i2c0_mipi1 {
++	status = "disabled";
++};
++
++&mipi1_dphy {
++	status = "disabled";
++};
++
++&mipi1_dsi_host {
++	status = "disabled";
++};
++
++&sai5 {
++	status = "okay";
++};
++
++&sai5_lpcg {
++	status = "okay";
++};
++
++&ldb1_phy {
++	status = "disabled";
++};
++
++&ldb1 {
++	status = "disabled";
++};
++
++&i2c1_lvds0 {
++	status = "disabled";
++};
++
++&irqsteer_hdmi {
++	status = "okay";
++};
++
++&hdmi_lpcg_i2c0 {
++	status = "okay";
++};
++
++&hdmi_lpcg_lis_ipg {
++	status = "okay";
++};
++
++&hdmi_lpcg_pwm_ipg {
++	status = "okay";
++};
++
++&hdmi_lpcg_i2s {
++	status = "okay";
++};
++
++&hdmi_lpcg_gpio_ipg {
++	status = "okay";
++};
++
++&hdmi_lpcg_msi_hclk {
++	status = "okay";
++};
++
++&hdmi_lpcg_pxl {
++	status = "okay";
++};
++
++&hdmi_lpcg_phy {
++	status = "okay";
++};
++
++&hdmi_lpcg_apb_mux_csr {
++	status = "okay";
++};
++
++&hdmi_lpcg_apb_mux_ctrl {
++	status = "okay";
++};
++
++&hdmi_lpcg_apb {
++	status = "okay";
++};
++
++&hdmi {
++	compatible = "cdn,imx8qm-dp";
++	firmware-name = "dpfw.bin";
++	lane-mapping = <0x1b>;
++	status = "okay";
++};
++
++&spdif1 {
++	status = "okay";
++};
++
++&spdif1_lpcg {
++	status = "okay";
++};
+-- 
+2.20.1
+

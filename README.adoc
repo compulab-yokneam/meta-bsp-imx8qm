@@ -1,0 +1,75 @@
+# Quick Start Guide
+
+# Supported CompuLab Machines
+* `cl-som-imx8max`
+
+# Prepare NXP BSP
+[source,console]
+repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-zeus -m imx-5.4.47-2.2.0.xml
+repo sync
+
+# Download CompuLab meta layer
+[source,console]
+git clone https://github.com/compulab-yokneam/meta-bsp-imx8qm.git sources/meta-bsp-imx8qm/
+
+# Set COMPULAB_MACHINE environment variable
+* `cl-som-imx8max`
+[source,console]
+COMPULAB_MACHINE=cl-som-imx8max
+
+# Build Images
+Refer to the https://source.codeaurora.org/external/imx/meta-imx/tree/README?h=zeus-5.4.47-2.2.0[`NXP Readme`] for details about how to select a correct `backend` & `distro`.
+
+* Full Compulab image 
+[source,console]
+MACHINE=${COMPULAB_MACHINE} DISTRO=fsl-imx-xwayland source sources/meta-bsp-imx8qm/tools/setup-env -b build-cl-som-imx8max
+bitbake -k compulab-image
+
+* Linux kernel only
+[source,console]
+source setup-environment build-cl-som-imx8max
+bitbake -c cleansstate linux-imx
+bitbake -k linux-imx
+
+* U-boot only
+[source,console]
+source setup-environment build-cl-som-imx8max
+bitbake -c cleansstate u-boot-imx
+bitbake -k u-boot-imx
+
+* Boot firmware (SCFW + U-Boot):
+[source,console]
+source setup-environment build-cl-som-imx8max
+bitbake -c cleansstate imx-boot
+bitbake -k imx-boot
+
+# Build results
+* The results of the build can be found at `${BUILDDIR}/tmp/deploy/images/${COMPULAB_MACHINE}`
+[source,console]
+ls -ltr ${BUILDDIR}/tmp/deploy/images/${COMPULAB_MACHINE}
+
+* Images files
+SD-card images files compressed by `bzip2` and can be listed this way:
+[source,console]
+ls -ltr ${BUILDDIR}/tmp/deploy/images/${COMPULAB_MACHINE}/*compulab-image-${COMPULAB_MACHINE}.wic.bz2
+
+# Create bootable media
+NOTE: In this chapter the target block device `/dev/sdi` is just an example.
+Make use ot the development host device name instead.
+
+## Using `dd`
+[source,console]
+cd ${BUILDDIR}/tmp/deploy/images/${COMPULAB_MACHINE}
+bzip2 -dc compulab-image-cl-som-imx8max.wic.bz2 | sudo dd of=/dev/sdi bs=1M status=progress conv=fsync
+
+## Using `bmaptool`
+[source,console]
+cd ${BUILDDIR}/tmp/deploy/images/${COMPULAB_MACHINE}
+sudo bmaptool copy compulab-image-cl-som-imx8max.wic.bz2 --bmap compulab-image-cl-som-imx8max.wic.bmap /dev/sdi
+
+# Device Trees and available features
+## sbc-imx8max
+* imx8qm-sbc-imx8max.dtb -- U-Boot default
+* imx8qm-sbc-imx8max-dp.dtb -- DP on
+* imx8qm-sbc-imx8max-pcie.dtb -- enable mPCIe slot P11 on the baseboard
+

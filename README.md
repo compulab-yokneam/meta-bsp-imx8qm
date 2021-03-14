@@ -1,1 +1,0 @@
-# meta-bsp-imx8qm

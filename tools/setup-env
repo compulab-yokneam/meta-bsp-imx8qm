@@ -1,0 +1,13 @@
+MACHINE=${MACHINE:-cl-som-imx8max}
+DISTRO=${DISTRO:-fsl-imx-xwayland}
+PACKAGE_CLASSES=${PACKAGE_CLASSES:-package_deb}
+EULA=1
+
+. imx-setup-release.sh $@
+
+declare -a ENVIRONMENT=('../sources/meta-bsp-imx8qm/tools/setup-compulab-env \
+			../sources/meta-bsp-imx8qm/tools/setup-user-env')
+
+for env in ${ENVIRONMENT[@]};do
+	[ -f ${env} ] && FORCE=Yes source ${env}
+done
